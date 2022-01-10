@@ -29,3 +29,7 @@ __all__ = [
     'ros_adapters',
     'substitutions',
 ]
+
+f = open("/tmp/cocosim_ns_pid", "w")
+f.write("")
+f.close()

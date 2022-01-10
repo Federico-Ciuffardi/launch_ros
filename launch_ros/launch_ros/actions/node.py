@@ -43,6 +43,9 @@ from launch.utilities import ensure_argument_type
 from launch.utilities import normalize_to_list_of_substitutions
 from launch.utilities import perform_substitutions
 
+from launch.events.process import ProcessStarted
+from launch.event_handlers import OnProcessStart
+
 from launch_ros.parameters_type import SomeParameters
 from launch_ros.remap_rule_type import SomeRemapRules
 from launch_ros.substitutions import ExecutableInPackage
@@ -458,7 +461,23 @@ class Node(ExecuteProcess):
                     'launch context'.format(node_name_count, self.node_name)
                 )
 
+        context.register_event_handler(OnProcessStart(
+            target_action=self,
+            on_start=self.__on_process_started
+        ))
+
         return ret
+
+    def __on_process_started(self, event: ProcessStarted, context: LaunchContext):
+        pid  = str(event.pid)
+        name = event.process_name
+        ns   = ""
+        if self.__node_namespace is not None:
+            ns = self.__node_namespace
+
+        f = open("/tmp/cocosim_ns_pid", "a")
+        f.write(pid + " : " + ns + " : " + name + "\n" )
+        f.close()
 
     @property
     def expanded_node_namespace(self):
