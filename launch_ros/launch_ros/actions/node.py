@@ -473,7 +473,7 @@ class Node(ExecuteProcess):
         name = event.process_name
         ns   = ""
         if self.__node_namespace is not None:
-            ns = self.__node_namespace
+            ns = self.__expanded_node_namespace[1:] # skip first char '/'
 
         f = open("/tmp/cocosim_ns_pid", "a")
         f.write(pid + " : " + ns + " : " + name + "\n" )
